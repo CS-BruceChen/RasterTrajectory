@@ -1,0 +1,72 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="源文件">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="头文件">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="资源文件">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="源文件\shader">
+      <UniqueIdentifier>{c35899a6-53a9-4834-b0fd-3db83a1d4eec}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenGL4.6\glad.c">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="testdata.csv">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="wholedata.csv">
+      <Filter>资源文件</Filter>
+    </None>
+    <None Include="polygon.fs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="polygon.vs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="showfbo.fs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="showfbo.vs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="test.fs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="test.vs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="testfbo.fs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="testfbo.vs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="tri.vs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="tri.fs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="sampleFBO.vs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+    <None Include="sampleFBO.fs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
+  </ItemGroup>
+</Project>
