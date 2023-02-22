@@ -1,6 +1,7 @@
 ﻿  main.cpp
-D:\C++\postgraduate\02071419\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(191,1): warning C4267: “=”: 从“size_t”转换到“unsigned int”，可能丢失数据
-D:\C++\postgraduate\02071419\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(496,38): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-D:\C++\postgraduate\02071419\ideaTest\ideaTest\main.cpp(17,25): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(191,1): warning C4267: “=”: 从“size_t”转换到“unsigned int”，可能丢失数据
+D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(609,38): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\main.cpp(20,47): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
+D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\main.cpp(21,47): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
 LINK : warning LNK4098: 默认库“MSVCRT”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
-  ideaTest.vcxproj -> D:\C++\postgraduate\02071419\ideaTest\x64\Debug\ideaTest.exe
+  ideaTest.vcxproj -> D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\x64\Debug\ideaTest.exe

@@ -1,5 +1,5 @@
 #version 460 core
-layout( location = 0) in vec2 aPos;//suppoes all normalized
+layout(location = 0) in vec2 aPos;//suppoes all normalized
 
 out vec2 ct;
 void main(){

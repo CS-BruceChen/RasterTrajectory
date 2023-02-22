@@ -282,13 +282,126 @@ struct Line {
         glGenBuffers(1, &lineVBO);
         glBindVertexArray(lineVAO);
         glBindBuffer(GL_ARRAY_BUFFER, lineVBO);
-        glBufferData(GL_ARRAY_BUFFER, 2 * len * sizeof(float), lineVert, GL_STATIC_DRAW);
+        
+        glBufferData(GL_ARRAY_BUFFER, 3 * len * sizeof(float), lineVert, GL_STATIC_DRAW);//x, y, id
+        
         glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(1, 1, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)(2 * sizeof(float)));
+
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
     }
 };
+
+struct GLTextureBuffer {
+    GLTextureBuffer() : texId(0), bufId(0) {}
+    void create(int size, GLenum format, void* data) {
+        this->size = size;
+        GLenum err;
+
+        if (bufId > 0)
+            glDeleteBuffers(1, &bufId);  //delete previously created tbo
+
+        glGenBuffers(1, &bufId);
+
+        glBindBuffer(GL_TEXTURE_BUFFER, bufId);
+        glBufferData(GL_TEXTURE_BUFFER, size, data, GL_DYNAMIC_DRAW);
+
+        err = glGetError();
+        if (err > 0) {
+            std::cout << "createTextureBuffer error 1: " << err << std::endl;
+        }
+
+        if (texId > 0)
+            glDeleteTextures(1, &texId); //delete previously created texture
+
+        glGenTextures(1, &texId);
+        glBindTexture(GL_TEXTURE_BUFFER, texId);
+        glTexBuffer(GL_TEXTURE_BUFFER, format, bufId);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+        err = glGetError();
+        if (err > 0) {
+            std::cout << "createTextureBuffer error 2: " << err << std::endl;
+        }
+    }
+    void setData(int size, GLenum format, void* data) {
+        this->size = size;
+        GLenum err;
+
+        if (bufId <= 0) {
+            std::cout << "buffer not created!!";
+            return;
+        }
+
+        glBindBuffer(GL_TEXTURE_BUFFER, bufId);
+        glBufferData(GL_TEXTURE_BUFFER, size, data, GL_DYNAMIC_DRAW);
+
+        err = glGetError();
+        if (err > 0) {
+            std::cout << "set data TextureBuffer error 1: "  << err <<std::endl;
+        }
+
+        if (texId <= 0) {
+            std::cout << "texture buffer not created!!";
+            return;
+        }
+
+        glBindTexture(GL_TEXTURE_BUFFER, texId);
+        glTexBuffer(GL_TEXTURE_BUFFER, format, bufId);
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+        glBindTexture(GL_TEXTURE_BUFFER, 0);
+
+        err = glGetError();
+        if (err > 0) {
+            std::cout << "set data TextureBuffer error 2: " << err << std::endl;
+        }
+    }
+    std::vector<int> getBuffer() {
+        std::vector<int> data(size / sizeof(int));
+        glBindBuffer(GL_TEXTURE_BUFFER, bufId);
+        GLenum err = glGetError();
+        glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, data.data());//有可能可以这样用，但是并不是很确定。它返回一个指向内存数组的直接指针，该内存数组由向量内部用于存储其拥有的元素。
+        err = glGetError();
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+        err = glGetError();
+        if (err > 0) {
+            std::cout << "getBuffer error: " << err << std::endl;
+        }
+        return data;
+    }
+    std::vector<float> getBufferF() {
+        std::vector<float> data(size / sizeof(float));
+        glBindBuffer(GL_TEXTURE_BUFFER, bufId);
+        GLenum err = glGetError();
+        glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, data.data());
+        err = glGetError();
+        glBindBuffer(GL_TEXTURE_BUFFER, 0);
+
+        err = glGetError();
+        if (err > 0) {
+            std::cout << "getBuffer error: " << err << std::endl;
+        }
+        return data;
+    }
+    void destroy() {
+        if (bufId > 0)
+            glDeleteBuffers(1, &bufId);  //delete previously created tbo
+
+        if (texId > 0)
+            glDeleteTextures(1, &texId); //delete previously created texture
+
+        bufId = 0;
+        texId = 0;
+    };
+
+    int size;
+    GLuint texId, bufId;
+};
+
 
 Shader* newShader(std::string name1) {
     std::vector<std::string> shader;
