@@ -3,29 +3,33 @@
 #include <cstdlib>
 #include <ctime>
 
-const unsigned trajN = 100;
-const unsigned len = 3;//traj len, which means how many points are there in a traj.
-const unsigned point_dimention = 3;//x,y,id
-
-const unsigned MAX_POLY_NUM = 1;//the number of polygons is less than 5 
-const unsigned MAX_EDGE_RANGE = 10;//each polygon will have at most 3+10=13 edges;
+const unsigned trajN = 100;//trajectory number
+const unsigned LEN_RANGE = 2;//trajectory lenth range: [2,2+LEN_RANGE-1]
+const unsigned POINT_DIMENSION = 3;//x,y,id
+const unsigned MAX_POLY_NUM = 1;//the number of polygons is 1 
+const unsigned MAX_EDGE_RANGE = 10;//each polygon will have at most 3+MAX_EDGE_RANGE-1 edges;
 
 int main() {
 	initOpenGL();
 	GLFWwindow* window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
 	initWindowAndGlad(window);
+
+    double init_time = glfwGetTime();
+
 	Shader* lineShader = newShader("tri");
     srand((int)time(0));
     Line* lineArray[trajN];
-    
+    unsigned lineLen[trajN];
     for (int j = 0; j < trajN; ++j) {
-        float* vert = new float[len * point_dimention];
+        unsigned len = 2 + rand() % LEN_RANGE;
+        float* vert = new float[len * POINT_DIMENSION];
         for (int i = 0; i < len; ++i) {
-            vert[i * point_dimention + 0] = 2 * ((rand() % 100) / 100.0 - 0.5);//x
-            vert[i * point_dimention + 1] = 2 * ((rand() % 100) / 100.0 - 0.5);//y
-            vert[i * point_dimention + 2] = (float)j;//id
+            vert[i * POINT_DIMENSION + 0] = 2 * ((rand() % 100) / 100.0 - 0.5);//x
+            vert[i * POINT_DIMENSION + 1] = 2 * ((rand() % 100) / 100.0 - 0.5);//y
+            vert[i * POINT_DIMENSION + 2] = (float)j;//id
         }
         lineArray[j] = new Line(vert, len);
+        lineLen[j] = len;
     }
 
     std::vector<TPolygon> polys;
@@ -76,7 +80,7 @@ int main() {
         lineShader->use();
         for (int i = 0; i < trajN; ++i) {
             glBindVertexArray(lineArray[i]->lineVAO);
-            glDrawArrays(GL_LINE_STRIP, 0, len);
+            glDrawArrays(GL_LINE_STRIP, 0, lineLen[i]);
             glBindVertexArray(0); // no need to unbind it every time 
         }
         glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -111,6 +115,8 @@ int main() {
     // ------------------------------------------------------------------------
     //glDeleteVertexArrays(1, &VAO);
     //glDeleteBuffers(1, &VBO);
+    double dt = glfwGetTime() - init_time;
+    std::cout << "total time is: "<< dt <<std::endl;
     glDeleteProgram(lineShader->ID);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.

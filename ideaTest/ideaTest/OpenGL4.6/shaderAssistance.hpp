@@ -386,7 +386,7 @@ struct GLTextureBuffer {
         std::vector<int> data(size / sizeof(int));
         glBindBuffer(GL_TEXTURE_BUFFER, bufId);
         GLenum err = glGetError();
-        glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, data.data());//有可能可以这样用，但是并不是很确定。它返回一个指向内存数组的直接指针，该内存数组由向量内部用于存储其拥有的元素。
+        glGetBufferSubData(GL_TEXTURE_BUFFER, 0, size, data.data());
         err = glGetError();
         glBindBuffer(GL_TEXTURE_BUFFER, 0);
 
@@ -799,7 +799,6 @@ typedef std::vector<c2t::Point> TPolygon;
 void triangulatePolygons(std::vector<TPolygon>& polys, std::vector<float>& verts, std::vector<float>& ids) {
     verts.clear();
     ids.clear();
-
     int mts = omp_get_max_threads();
     std::cout << "max threads:" << mts <<std::endl;
     std::vector<std::vector<float> > tverts(mts), tids(mts);
@@ -810,12 +809,9 @@ void triangulatePolygons(std::vector<TPolygon>& polys, std::vector<float>& verts
         vector<TPolygon > inputPolygons;
         TPolygon outputTriangles;  // Every 3 points is a triangle
         TPolygon boundingPolygon;
-
         inputPolygons.push_back(polys[i]);
         c2t::clip2tri clip2tri;
         clip2tri.triangulate(inputPolygons, outputTriangles, boundingPolygon);
-
-
         for (int j = 0; j < outputTriangles.size(); j++) {
             float x = float(outputTriangles[j].x);
             float y = float(outputTriangles[j].y);
@@ -824,8 +820,6 @@ void triangulatePolygons(std::vector<TPolygon>& polys, std::vector<float>& verts
             tids[id].push_back(i);
         }
     }
-
-
     for (int i = 0; i < mts; i++) {
         verts.insert(verts.end(), tverts[i].begin(), tverts[i].end());
         ids.insert(ids.end(), tids[i].begin(), tids[i].end());

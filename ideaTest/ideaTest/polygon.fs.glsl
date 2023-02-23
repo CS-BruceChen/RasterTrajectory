@@ -18,4 +18,5 @@ void main()
     int id = getId(pix.r);
     imageAtomicAdd(resultBuf, id, 1);
     FragColor = vec4(pix.rgb,1.0);
+    //FragColor = vec4(1.0,0.5,0.0,1.0);
 }
