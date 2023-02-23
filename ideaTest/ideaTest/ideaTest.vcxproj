@@ -115,8 +115,9 @@
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>OpenGL4.6</AdditionalIncludeDirectories>
+      <ConformanceMode>false</ConformanceMode>
+      <AdditionalIncludeDirectories>OpenGL4.6;triangulation</AdditionalIncludeDirectories>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,6 +145,13 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="OpenGL4.6\glad.c" />
+    <ClCompile Include="triangulation\clip2tri\clip2tri.cpp" />
+    <ClCompile Include="triangulation\clipper\clipper.cpp" />
+    <ClCompile Include="triangulation\poly2tri\common\shapes.cc" />
+    <ClCompile Include="triangulation\poly2tri\sweep\advancing_front.cc" />
+    <ClCompile Include="triangulation\poly2tri\sweep\cdt.cc" />
+    <ClCompile Include="triangulation\poly2tri\sweep\sweep.cc" />
+    <ClCompile Include="triangulation\poly2tri\sweep\sweep_context.cc" />
   </ItemGroup>
   <ItemGroup>
     <None Include="polygon.fs.glsl" />
@@ -154,12 +162,21 @@
     <None Include="showfbo.vs.glsl" />
     <None Include="test.fs.glsl" />
     <None Include="test.vs.glsl" />
-    <None Include="testdata.csv" />
     <None Include="testfbo.fs.glsl" />
     <None Include="testfbo.vs.glsl" />
     <None Include="tri.fs.glsl" />
     <None Include="tri.vs.glsl" />
-    <None Include="wholedata.csv" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="triangulation\clip2tri\clip2tri.h" />
+    <ClInclude Include="triangulation\clipper\clipper.hpp" />
+    <ClInclude Include="triangulation\poly2tri\common\shapes.h" />
+    <ClInclude Include="triangulation\poly2tri\common\utils.h" />
+    <ClInclude Include="triangulation\poly2tri\poly2tri.h" />
+    <ClInclude Include="triangulation\poly2tri\sweep\advancing_front.h" />
+    <ClInclude Include="triangulation\poly2tri\sweep\cdt.h" />
+    <ClInclude Include="triangulation\poly2tri\sweep\sweep.h" />
+    <ClInclude Include="triangulation\poly2tri\sweep\sweep_context.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

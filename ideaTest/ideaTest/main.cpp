@@ -6,6 +6,10 @@
 const unsigned trajN = 100;
 const unsigned len = 3;//traj len, which means how many points are there in a traj.
 const unsigned point_dimention = 3;//x,y,id
+
+const unsigned MAX_POLY_NUM = 1;//the number of polygons is less than 5 
+const unsigned MAX_EDGE_RANGE = 10;//each polygon will have at most 3+10=13 edges;
+
 int main() {
 	initOpenGL();
 	GLFWwindow* window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
@@ -24,7 +28,22 @@ int main() {
         lineArray[j] = new Line(vert, len);
     }
 
-    
+    std::vector<TPolygon> polys;
+    unsigned TOTAL_POLY_VERT_NUM = 0;
+    for (int i = 0; i < MAX_POLY_NUM; ++i) {
+        TPolygon temp_poly;
+        unsigned edgeNum = 3 + (rand() % MAX_EDGE_RANGE);//随机的多边形边数目
+        TOTAL_POLY_VERT_NUM += edgeNum;
+        for (int j = 0; j < edgeNum; ++j) {
+            c2t::Point p;//random polygon vertex
+            p.x = 2 * ((rand() % 100) / 100.0 - 0.5);
+            p.y = 2 * ((rand() % 100) / 100.0 - 0.5);
+            temp_poly.push_back(p);
+        }
+        polys.push_back(temp_poly);
+    }
+    std::vector<float> verts,ids;
+    triangulatePolygons(polys, verts, ids);
     
     FBO* fbo = new FBO(SCR_WIDTH, SCR_HEIGHT, FBO::Attachment::NoAttachment, GL_TEXTURE_2D, GL_RGB);
     unsigned framebuffer = fbo->getFBO();
@@ -34,6 +53,7 @@ int main() {
     Shader* testPoly_shader = newShader("polygon");
     Quad quad;
     TestPoly testPoly;
+    Test_Poly_Tri tpt(verts.size() * sizeof(float), verts.data());
 
     GLTextureBuffer texBuf;
     std::vector<int> resultData;
@@ -64,9 +84,11 @@ int main() {
         //sampleFBO_shader->use();
         //glBindVertexArray(quad.quadVAO);
         testPoly_shader->use();
-        glBindVertexArray(testPoly.polyVAO);
+        //glBindVertexArray(testPoly.polyVAO);
+        glBindVertexArray(tpt.tptVAO);
         glBindTexture(GL_TEXTURE_2D, textureColorbuffer);	// use the color attachment texture as the texture of the quad plane
-        glDrawArrays(GL_TRIANGLES, 0, 6);
+        //glDrawArrays(GL_TRIANGLES, 0, 6);
+        glDrawArrays(GL_TRIANGLES, 0, TOTAL_POLY_VERT_NUM);
         glBindVertexArray(0);
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
@@ -77,11 +99,14 @@ int main() {
 
     resultData = texBuf.getBuffer();
     texBuf.destroy();
+    unsigned count = 0;
     for (int i = 0; i < trajN; ++i) {
         if (resultData[i] > 0) {
+            ++count;
             std::cout << "Trajectory [" << i << "] overlap the polygon" << std::endl;
         }
     }
+    std::cout << "There are a total of "<< trajN <<" trajectories, "<< count <<" of which are within the polygon" << std::endl;
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     //glDeleteVertexArrays(1, &VAO);

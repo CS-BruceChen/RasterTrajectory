@@ -5,6 +5,12 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+#include <omp.h>
+#include <clipper/clipper.hpp>
+#include <poly2tri/poly2tri.h>
+#include <clip2tri/clip2tri.h>
+
+
 const unsigned SCR_WIDTH = 800;
 const unsigned SCR_HEIGHT = 600;
 
@@ -273,6 +279,23 @@ struct TestPoly {
         glBindVertexArray(0);
     }
 };
+
+struct Test_Poly_Tri {
+    unsigned tptVAO;
+    unsigned tptVBO;
+    Test_Poly_Tri(unsigned size, void* data) {
+        glGenVertexArrays(1, &tptVAO);
+        glGenBuffers(1, &tptVBO);
+        glBindVertexArray(tptVAO);
+        glBindBuffer(GL_ARRAY_BUFFER, tptVBO);
+        glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW);
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindVertexArray(0);
+    }
+};
+
 
 struct Line {
     unsigned lineVAO;
@@ -771,4 +794,41 @@ float* ImageTexture::getTextureData(GLuint width, GLuint height, GLuint channels
 }
 
 
+typedef std::vector<c2t::Point> TPolygon;
+
+void triangulatePolygons(std::vector<TPolygon>& polys, std::vector<float>& verts, std::vector<float>& ids) {
+    verts.clear();
+    ids.clear();
+
+    int mts = omp_get_max_threads();
+    std::cout << "max threads:" << mts <<std::endl;
+    std::vector<std::vector<float> > tverts(mts), tids(mts);
+
+#pragma omp parallel for
+    for (int i = 0; i < polys.size(); i++) {
+        int id = omp_get_thread_num();
+        vector<TPolygon > inputPolygons;
+        TPolygon outputTriangles;  // Every 3 points is a triangle
+        TPolygon boundingPolygon;
+
+        inputPolygons.push_back(polys[i]);
+        c2t::clip2tri clip2tri;
+        clip2tri.triangulate(inputPolygons, outputTriangles, boundingPolygon);
+
+
+        for (int j = 0; j < outputTriangles.size(); j++) {
+            float x = float(outputTriangles[j].x);
+            float y = float(outputTriangles[j].y);
+            tverts[id].push_back(x);
+            tverts[id].push_back(y);
+            tids[id].push_back(i);
+        }
+    }
+
+
+    for (int i = 0; i < mts; i++) {
+        verts.insert(verts.end(), tverts[i].begin(), tverts[i].end());
+        ids.insert(ids.end(), tids[i].begin(), tids[i].end());
+    }
+}
 

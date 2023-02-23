@@ -24,14 +24,29 @@
     <ClCompile Include="OpenGL4.6\glad.c">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="triangulation\clip2tri\clip2tri.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="triangulation\clipper\clipper.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="triangulation\poly2tri\common\shapes.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="triangulation\poly2tri\sweep\advancing_front.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="triangulation\poly2tri\sweep\cdt.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="triangulation\poly2tri\sweep\sweep.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="triangulation\poly2tri\sweep\sweep_context.cc">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="testdata.csv">
-      <Filter>资源文件</Filter>
-    </None>
-    <None Include="wholedata.csv">
-      <Filter>资源文件</Filter>
-    </None>
     <None Include="polygon.fs.glsl">
       <Filter>源文件\shader</Filter>
     </None>
@@ -68,5 +83,34 @@
     <None Include="sampleFBO.fs.glsl">
       <Filter>源文件\shader</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="triangulation\clip2tri\clip2tri.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\clipper\clipper.hpp">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\poly2tri\common\shapes.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\poly2tri\common\utils.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\poly2tri\sweep\advancing_front.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\poly2tri\sweep\cdt.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\poly2tri\sweep\sweep.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\poly2tri\sweep\sweep_context.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="triangulation\poly2tri\poly2tri.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
