@@ -101,6 +101,28 @@ int main() {
         glfwPollEvents();
     }
 
+    //Compute Shader test
+    std::vector<std::string> csFile;
+    csFile.push_back("./testCompute.cs.glsl");
+    Shader* testCompute_shader = new Shader(csFile);
+    
+    int cs_result = 0;
+    GLTextureBuffer cs_buf;
+    cs_buf.create(sizeof(GLint), GL_R32I, &cs_result);
+    testCompute_shader->use();
+    testCompute_shader->setVec4("A", 1, 2, 3, 4);
+    testCompute_shader->setVec4("B", 5, 6, 7, 8);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, cs_buf.bufId);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, cs_buf.bufId);
+
+    glDispatchCompute(1, 1, 1);
+
+    cs_result = cs_buf.getBuffer()[0];
+
+    std::cout << "CS result is: " << cs_result << std::endl;
+
+
+
     resultData = texBuf.getBuffer();
     texBuf.destroy();
     unsigned count = 0;

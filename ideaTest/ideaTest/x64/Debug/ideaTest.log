@@ -1,8 +1,8 @@
 ﻿  main.cpp
 D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\triangulation\poly2tri\sweep\sweep_context.h(161,24): warning C4267: “return”: 从“size_t”转换到“int”，可能丢失数据
-D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(197,1): warning C4267: “=”: 从“size_t”转换到“unsigned int”，可能丢失数据
-D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(632,38): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
-D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(820,32): warning C4244: “参数”: 从“int”转换到“_Ty”，可能丢失数据
+D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(198,1): warning C4267: “=”: 从“size_t”转换到“unsigned int”，可能丢失数据
+D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(633,38): warning C4267: “初始化”: 从“size_t”转换到“int”，可能丢失数据
+D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\OpenGL4.6\shaderAssistance.hpp(825,32): warning C4244: “参数”: 从“int”转换到“_Ty”，可能丢失数据
           with
           [
               _Ty=float
@@ -12,4 +12,5 @@ D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\main.cpp(27,47)
 D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\main.cpp(28,47): warning C4244: “=”: 从“double”转换到“float”，可能丢失数据
 D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\main.cpp(41,27): warning C4018: “<”: 有符号/无符号不匹配
 D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\ideaTest\main.cpp(60,65): warning C4267: “参数”: 从“size_t”转换到“unsigned int”，可能丢失数据
+LINK : warning LNK4098: 默认库“MSVCRT”与其他库的使用冲突；请使用 /NODEFAULTLIB:library
   ideaTest.vcxproj -> D:\postgraduate\2023\02212006\RasterTrajectory\ideaTest\x64\Debug\ideaTest.exe

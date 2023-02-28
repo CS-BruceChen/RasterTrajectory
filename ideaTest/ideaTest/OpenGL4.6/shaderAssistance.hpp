@@ -45,6 +45,7 @@ public:
     void setVec2(const std::string& name, float x, float y) const;
     void setVec3(const std::string& name, float x, float y, float z) const;    
     void setVec4(const std::string& name, float x, float y, float z, float w) const;
+    void setVec4(const std::string& name, int x, int y, int z, int w) const;
 
 private:
     std::string getShaderSourceCode(const std::string& filePath);
@@ -668,6 +669,10 @@ void Shader::setVec3(const std::string& name, float x, float y, float z) const{
 
 void Shader::setVec4(const std::string& name, float x, float y, float z, float w) const{
     glUniform4f(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
+}
+
+void Shader::setVec4(const std::string& name, int x, int y, int z, int w) const {
+    glUniform4i(glGetUniformLocation(ID, name.c_str()), x, y, z, w);
 }
 
 std::string Shader::getShaderSourceCode(const std::string& filePath) {

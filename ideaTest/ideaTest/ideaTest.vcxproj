@@ -162,6 +162,7 @@
     <None Include="showfbo.vs.glsl" />
     <None Include="test.fs.glsl" />
     <None Include="test.vs.glsl" />
+    <None Include="testCompute.cs.glsl" />
     <None Include="testfbo.fs.glsl" />
     <None Include="testfbo.vs.glsl" />
     <None Include="tri.fs.glsl" />
