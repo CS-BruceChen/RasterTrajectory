@@ -86,6 +86,9 @@
     <None Include="testCompute.cs.glsl">
       <Filter>源文件\shader</Filter>
     </None>
+    <None Include="computeEDR.cs.glsl">
+      <Filter>源文件\shader</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="triangulation\clip2tri\clip2tri.h">

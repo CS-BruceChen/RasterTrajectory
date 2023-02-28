@@ -38,6 +38,7 @@ class Shader
 public:
     GLuint ID;//shader program ID
     Shader(std::vector<std::string> filePaths);
+    Shader(std::vector<std::string> filePaths, unsigned blocksize);//for dynamic local_size
     void use();
     void setBool(const std::string& name, bool value) const;
     void setInt(const std::string& name, int value) const;
@@ -49,6 +50,7 @@ public:
 
 private:
     std::string getShaderSourceCode(const std::string& filePath);
+    std::string getShaderSourceCode(const std::string& filePath,unsigned blocksize);//for dynamic local_size
     void compileAndLinkShader(std::string& shaderString, char shaderType);
     void checkErrors(GLuint id, std::string type);//id means shader id or program id
 };
@@ -639,6 +641,18 @@ Shader::Shader(std::vector<std::string> filePaths) {
 
     }
 }
+Shader::Shader(std::vector<std::string> filePaths,unsigned blocksize) {
+    ID = glCreateProgram();
+    for (int i = 0; i < (int)filePaths.size(); ++i) {
+        int len = filePaths[i].size();
+        char shaderType = filePaths[i][len - 7];//[name].[type char]s.glsl,
+        //std::cout << filePaths[i] << std::endl;
+        //std::cout << shaderType << std::endl;
+        std::string shaderString = getShaderSourceCode(filePaths[i],blocksize);
+        compileAndLinkShader(shaderString, shaderType);
+
+    }
+}
 
 void Shader::use() {
     glUseProgram(ID);
@@ -693,6 +707,41 @@ std::string Shader::getShaderSourceCode(const std::string& filePath) {
 
     return computeShaderString;
 }
+
+std::string Shader::getShaderSourceCode(const std::string& filePath,unsigned blocksize) {
+    std::string computeShaderString;
+    std::ifstream computeShaderFile;
+    computeShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+    try {
+        computeShaderFile.open(filePath);
+        std::stringstream computeShaderStream;
+        computeShaderStream << computeShaderFile.rdbuf();
+        computeShaderFile.close();
+        computeShaderString = computeShaderStream.str();
+        //set blocksize
+        std::vector<unsigned> lineBreaksIndex;
+        for (unsigned i = 0; i < computeShaderString.size(); ++i) {
+            if (computeShaderString[i] == '\n') lineBreaksIndex.push_back(i);
+        }
+        for (unsigned i = 1; i < lineBreaksIndex.size(); ++i) {
+            unsigned pos = lineBreaksIndex[i - 1] + 1;
+            unsigned len = lineBreaksIndex[i] - lineBreaksIndex[i - 1] - 1;
+            std::string lineString = computeShaderString.substr(pos, len);
+            if (lineString == "#define BLOCKSIZE 518") {
+                std::cout << "BLOCKSIZE is successfully changed" << std::endl;
+                computeShaderString.replace(pos, len, "#define BLOCKSIZE " + to_string(blocksize));
+            }
+        }
+
+    }
+    catch (std::ifstream::failure& e)
+    {
+        std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ: " << e.what() << std::endl;
+    }
+
+    return computeShaderString;
+}
+
 
 void Shader::compileAndLinkShader(std::string& shaderString ,char shaderType) {
     const char* shaderCode = shaderString.c_str();

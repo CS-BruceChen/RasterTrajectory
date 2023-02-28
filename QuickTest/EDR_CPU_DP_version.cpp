@@ -17,7 +17,7 @@ struct Point{
 	Point(float u,float v):x(u), y(v){};
 };
 
-//test_ok
+
 struct SEQ {
 	std::vector<Point>* points;
 	unsigned len;
@@ -26,7 +26,7 @@ struct SEQ {
 	SEQ(std::vector<Point>* data):points(data),len(data->size()),startIndex(0),pointNum(data->size()){}
 	SEQ(SEQ& T):points(T.points),len(T.len),startIndex(T.startIndex),pointNum(T.pointNum){}
 };
-//test_ok
+
 SEQ head(SEQ T){
 	SEQ headT(T);
 	headT.startIndex++;
@@ -61,14 +61,14 @@ unsigned min(unsigned a,unsigned b,unsigned c){
 }
 
 unsigned getEDR(SEQ T,SEQ S) {
-	if(T.pointNum==0){//test_ok
+	if(T.pointNum==0){
 		return S.pointNum;
 	}
-	else if(S.pointNum==0){//test_ok
+	else if(S.pointNum==0){
 		return T.pointNum;
 	}
 	else{
-		return min(//test_ok
+		return min(
 			getEDR(head(T),head(S))+subcost(T,S),
 			getEDR(head(T),S)+1,
 			getEDR(T,head(S))+1
@@ -202,14 +202,16 @@ int main(){
 	s.push_back(Point(0,0));
 	s.push_back(Point(0,0));
 	s.push_back(Point(0,0));
-	s.push_back(Point(0,0));
+	s.push_back(Point(3,0));
 	s.push_back(Point(0,0));
 	SEQ T(&t);
 	SEQ S(&s);
 	
+	std::cout<<"the EDR beteen T and S is:"<<getEDR(T,S)<<std::endl;
+//	std::cout<<"the EDR beteen T and S is:"<<getEDR_GPU(T,S)<<std::endl;
 //	print(getEDR(T,S));
-	print(getEDR_GPU(S,T));
-//	getEDR_GPU(T,S);
+//	print(getEDR_GPU(S,T));
+	getEDR_GPU(T,S);
 	
 	return 0;
 }

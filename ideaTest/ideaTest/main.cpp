@@ -3,20 +3,22 @@
 #include <cstdlib>
 #include <ctime>
 
+#define print(a) std::cout<<(a)<<std::endl
+
 const unsigned trajN = 100;//trajectory number
 const unsigned LEN_RANGE = 2;//trajectory lenth range: [2,2+LEN_RANGE-1]
 const unsigned POINT_DIMENSION = 3;//x,y,id
 const unsigned MAX_POLY_NUM = 1;//the number of polygons is 1 
 const unsigned MAX_EDGE_RANGE = 10;//each polygon will have at most 3+MAX_EDGE_RANGE-1 edges;
 
-int main() {
-	initOpenGL();
-	GLFWwindow* window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
-	initWindowAndGlad(window);
+int RQTest() {
+    initOpenGL();
+    GLFWwindow* window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
+    initWindowAndGlad(window);
 
     double init_time = glfwGetTime();
 
-	Shader* lineShader = newShader("tri");
+    Shader* lineShader = newShader("tri");
     srand((int)time(0));
     Line* lineArray[trajN];
     unsigned lineLen[trajN];
@@ -46,13 +48,13 @@ int main() {
         }
         polys.push_back(temp_poly);
     }
-    std::vector<float> verts,ids;
+    std::vector<float> verts, ids;
     triangulatePolygons(polys, verts, ids);
-    
+
     FBO* fbo = new FBO(SCR_WIDTH, SCR_HEIGHT, FBO::Attachment::NoAttachment, GL_TEXTURE_2D, GL_RGB);
     unsigned framebuffer = fbo->getFBO();
     unsigned textureColorbuffer = fbo->texture();
-	
+
     Shader* sampleFBO_shader = newShader("sampleFBO");
     Shader* testPoly_shader = newShader("polygon");
     Quad quad;
@@ -105,7 +107,7 @@ int main() {
     std::vector<std::string> csFile;
     csFile.push_back("./testCompute.cs.glsl");
     Shader* testCompute_shader = new Shader(csFile);
-    
+
     int cs_result = 0;
     GLTextureBuffer cs_buf;
     cs_buf.create(sizeof(GLint), GL_R32I, &cs_result);
@@ -114,14 +116,9 @@ int main() {
     testCompute_shader->setVec4("B", 5, 6, 7, 8);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, cs_buf.bufId);
     glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, cs_buf.bufId);
-
     glDispatchCompute(1, 1, 1);
-
     cs_result = cs_buf.getBuffer()[0];
-
     std::cout << "CS result is: " << cs_result << std::endl;
-
-
 
     resultData = texBuf.getBuffer();
     texBuf.destroy();
@@ -132,19 +129,37 @@ int main() {
             std::cout << "Trajectory [" << i << "] overlap the polygon" << std::endl;
         }
     }
-    std::cout << "There are a total of "<< trajN <<" trajectories, "<< count <<" of which are within the polygon" << std::endl;
+    std::cout << "There are a total of " << trajN << " trajectories, " << count << " of which are within the polygon" << std::endl;
     // optional: de-allocate all resources once they've outlived their purpose:
     // ------------------------------------------------------------------------
     //glDeleteVertexArrays(1, &VAO);
     //glDeleteBuffers(1, &VBO);
     double dt = glfwGetTime() - init_time;
-    std::cout << "total time is: "<< dt <<std::endl;
+    std::cout << "total time is: " << dt << std::endl;
     glDeleteProgram(lineShader->ID);
 
     // glfw: terminate, clearing all previously allocated GLFW resources.
     // ------------------------------------------------------------------
     glfwTerminate();
 
+    return 0;
+}
 
+
+int SQTest() {
+    initOpenGL();
+    GLFWwindow* window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
+    initWindowAndGlad(window);
+
+    //create compute shader
+    std::vector<std::string> csFile;
+    csFile.push_back("./computeEDR.cs.glsl");
+    Shader* EDR_shader = new Shader(csFile,15);
+
+    glfwTerminate();
 	return 0;
+}
+
+int main() {
+    return SQTest();
 }

@@ -154,6 +154,7 @@
     <ClCompile Include="triangulation\poly2tri\sweep\sweep_context.cc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="computeEDR.cs.glsl" />
     <None Include="polygon.fs.glsl" />
     <None Include="polygon.vs.glsl" />
     <None Include="sampleFBO.fs.glsl" />
