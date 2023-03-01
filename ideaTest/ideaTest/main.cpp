@@ -146,16 +146,44 @@ int RQTest() {
 }
 
 
+
 int SQTest() {
     initOpenGL();
     GLFWwindow* window = createWindow(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
     initWindowAndGlad(window);
 
-    //create compute shader
+    std::vector<c2t::Point> T;
+    T.push_back(c2t::Point(0, 0));
+    T.push_back(c2t::Point(0, 0));
+    T.push_back(c2t::Point(0, 0));
+    T.push_back(c2t::Point(3, 0));
+    T.push_back(c2t::Point(0, 0));
+    std::vector<c2t::Point> S;
+    S.push_back(c2t::Point(0, 0));
+    S.push_back(c2t::Point(2, 0));
+    S.push_back(c2t::Point(0, 2));
+    
+    DPInfo dpinfo(T, S);
+
     std::vector<std::string> csFile;
     csFile.push_back("./computeEDR.cs.glsl");
-    Shader* EDR_shader = new Shader(csFile,15);
+    Shader* EDR_shader = new Shader(csFile,dpinfo.get_min_wd_ht());
+    dpinfo.setUniformDPInfo(EDR_shader);
 
+    EDR_shader->use();
+    for (unsigned i = 1; i <= dpinfo.get_total_step(); ++i) {
+        std::cout << std::endl << "------------------------------------" << std::endl;
+        EDR_shader->setUint("step_now", i);
+        glDispatchCompute(1, 1, 1);
+        std::vector<int> DP_Result = dpinfo.get_DPBuf();
+        for (size_t i = 0; i < DP_Result.size(); ++i) {
+            if (i % (dpinfo.get_wd() + 1) == 0) std::cout << std::endl;
+            std::cout << DP_Result[i] << " ";
+        }
+    }
+
+    std::cout << std::endl;
+    std::cout << "DP result is:" << *(dpinfo.get_DPBuf().end()-1) << std::endl;
     glfwTerminate();
 	return 0;
 }

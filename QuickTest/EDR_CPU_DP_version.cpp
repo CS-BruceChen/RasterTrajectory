@@ -123,8 +123,8 @@ struct DPInfo{
 	}
 	void showDPArray(){
 		print("DPArray---------------------------------");
-		for(unsigned i = 0; i <= wd; i++){
-			for(unsigned j = 0; j <= ht; j++){
+		for(unsigned j = 0; j <= ht; j++){
+			for(unsigned i = 0; i <= wd; i++){
 				std::cout<<DP_Array[i][j]<<" ";
 			}
 			std::cout<<std::endl;
@@ -183,6 +183,7 @@ void slashDP(DPInfo* dpinfo,unsigned step_now){
 
 unsigned getEDR_GPU(SEQ T,SEQ S){
 	DPInfo dpinfo(T,S);
+//	dpinfo.showDPInfo();
 	omp_set_num_threads(dpinfo.min_wd_ht);
 	
 	for(unsigned i = 1; i <= dpinfo.total_step; i++){
@@ -211,7 +212,7 @@ int main(){
 //	std::cout<<"the EDR beteen T and S is:"<<getEDR_GPU(T,S)<<std::endl;
 //	print(getEDR(T,S));
 //	print(getEDR_GPU(S,T));
-	getEDR_GPU(T,S);
+	getEDR_GPU(S,T);
 	
 	return 0;
 }

@@ -42,7 +42,8 @@ public:
     void use();
     void setBool(const std::string& name, bool value) const;
     void setInt(const std::string& name, int value) const;
-    void setFloat(const std::string& name, float value) const;   
+    void setFloat(const std::string& name, float value) const;
+    void setUint(const std::string& name, unsigned value) const;
     void setVec2(const std::string& name, float x, float y) const;
     void setVec3(const std::string& name, float x, float y, float z) const;    
     void setVec4(const std::string& name, float x, float y, float z, float w) const;
@@ -438,6 +439,111 @@ Shader* newShader(std::string name1) {
     return new Shader(shader);
 }
 
+struct DPInfo
+{
+public:
+    DPInfo(std::vector<c2t::Point>& tq, std::vector<c2t::Point>& t) {
+        wd = tq.size();
+        ht = t.size();
+        isWdBiggerThanHt = wd > ht ? true : false;
+        min_wd_ht = wd < ht ? wd : ht;
+        d_w_h = distance(wd, ht);
+        total_step = wd + ht;
+
+        //init DPBuf
+        DP = new int[(wd + 1) * (ht + 1)];
+        for (unsigned i = 0; i <= wd; ++i) {
+            for (unsigned j = 0; j <= ht; ++j) {
+                int val = 0;
+                if (i == 0) val = j;
+                else if (j == 0) val = i;
+                DP[i + j * (wd + 1)] = val;
+            }
+        }
+        DPBuf.create((wd + 1) * (ht + 1) * sizeof(int), GL_R32I, DP);
+        glBindImageTexture(0, DPBuf.texId, 0, GL_FALSE, 0, GL_READ_WRITE, GL_R32I);
+
+        //init Points Buf
+        WX = new float[wd];
+        WY = new float[wd];
+        HX = new float[ht];
+        HY = new float[ht];
+        for (unsigned i = 0; i < wd; ++i) {
+            WX[i] = tq[i].x;
+            WY[i] = tq[i].y;
+        }
+        for (unsigned i = 0; i < ht; ++i) {
+            HX[i] = t[i].x;
+            HY[i] = t[i].y;
+        }
+        WXBuf.create(wd * sizeof(float), GL_R32F, WX);
+        WYBuf.create(wd * sizeof(float), GL_R32F, WY);
+        HXBuf.create(ht * sizeof(float), GL_R32F, HX);
+        HYBuf.create(ht * sizeof(float), GL_R32F, HY);
+        glBindImageTexture(1, WXBuf.texId, 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+        glBindImageTexture(2, WYBuf.texId, 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+        glBindImageTexture(3, HXBuf.texId, 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+        glBindImageTexture(4, HYBuf.texId, 0, GL_FALSE, 0, GL_READ_ONLY, GL_R32F);
+    }
+    DPInfo(unsigned W, unsigned H) {
+        wd = W;
+        ht = H;
+        isWdBiggerThanHt = wd > ht ? true : false;
+        min_wd_ht = wd < ht ? wd : ht;
+        d_w_h = distance(wd, ht);
+        total_step = wd + ht;
+    }
+    ~DPInfo() {
+        delete[] DP;
+        delete[] WX;
+        delete[] WY;
+        delete[] HX;
+        delete[] HY;
+        DPBuf.destroy();
+        WXBuf.destroy();
+        WYBuf.destroy();
+        HXBuf.destroy();
+        HYBuf.destroy();
+    }
+    unsigned get_wd() const { return wd; }
+    unsigned get_ht() const { return ht; }
+    bool get_isWdBiggerThanHt() const { return isWdBiggerThanHt; }
+    unsigned get_min_wd_ht() const { return min_wd_ht; }
+    unsigned get_d_w_h() const { return d_w_h; }
+    unsigned get_total_step() const { return total_step; }
+    std::vector<int> get_DPBuf() {
+        return DPBuf.getBuffer();
+    }
+    void setUniformDPInfo(Shader* s) {
+        s->use();
+        s->setUint("dpinfo.wd", wd);
+        s->setUint("dpinfo.ht", ht);
+        s->setBool("dpinfo.isWdBiggerThanHt", isWdBiggerThanHt);
+        s->setUint("dpinfo.min_wd_ht", min_wd_ht);
+        s->setUint("dpinfo.d_w_h", d_w_h);
+        s->setUint("dpinfo.total_step", total_step);
+    }
+private:
+    unsigned wd, ht;
+    bool isWdBiggerThanHt;
+    unsigned min_wd_ht;
+    unsigned d_w_h;
+    unsigned total_step;
+    GLTextureBuffer DPBuf;
+    GLTextureBuffer WXBuf, WYBuf, HXBuf, HYBuf;
+    int* DP;
+    float* WX;
+    float* WY;
+    float* HX;
+    float* HY;
+    unsigned distance(unsigned a, unsigned b) {
+        if (a > b) return a - b;
+        else return b - a;
+    }
+
+
+};
+
 //implemetation
 
 /*
@@ -668,6 +774,10 @@ void Shader::setInt(const std::string& name, int value) const{
 // ------------------------------------------------------------------------
 void Shader::setFloat(const std::string& name, float value) const{
     glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
+}
+
+void Shader::setUint(const std::string& name, unsigned value) const {
+    glUniform1ui(glGetUniformLocation(ID, name.c_str()), value);
 }
 // ------------------------------------------------------------------------
 
